@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service;
 public class LikesService {
     @Autowired
     PostService postService;
+
     public Integer like(Long postId){
-        Post post = postService.listAllPosts().get(postId.intValue());
+        Post post = postService.getById(postId);
         post.setLikes(post.getLikes() + 1);
         return post.getLikes();
     }

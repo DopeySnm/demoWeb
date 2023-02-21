@@ -1,25 +1,34 @@
 package com.example.demoweb.service;
 
 import com.example.demoweb.model.Post;
+import com.example.demoweb.repository.PostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 @Service
 public class PostService {
-    private ArrayList<Post> posts;
-    PostService(){
-        posts = new ArrayList<>();
-        Post post1 = new Post(0L,"Пост 1", new Date());
-        posts.add(post1);
+    @Autowired
+    PostRepository postRepository;
+
+    public Post getById(Long id){
+        return postRepository.findById(id).get();
     }
 
-    public ArrayList<Post> listAllPosts(){
-        return posts;
+    public List<Post> listAllPosts() {
+        return (List<Post>) postRepository.findAll();
     }
 
     public void create(String text) {
-        posts.add(new Post((long) (posts.size() + 1), text, new Date()));
+        Random random = new Random();
+        Long id = random.nextLong(1,1000);
+        while (postRepository.existsById(id)){
+            id = random.nextLong(1,1000);
+        }
+        Post post = new Post(id, text, new Date());
+        postRepository.save(post);
     }
 }
